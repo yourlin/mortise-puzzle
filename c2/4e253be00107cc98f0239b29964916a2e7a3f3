@@ -1,0 +1,31 @@
+README.md
+  s_909815e0e45219::t_57f41ae17dbc34 11-15
+  s_909815e0e45219::t_8e165519497c58 96-106
+demo/demo.css
+  s_909815e0e45219::t_d955212562de72 356,403-405,412-413
+src/react/styles.css
+  s_909815e0e45219::t_d955212562de72 27-28
+demo/App.tsx
+  s_909815e0e45219::t_d955212562de72 3,60-62,212
+demo/Lightbox.tsx
+  s_909815e0e45219::t_d955212562de72 3,138
+README.zh-CN.md
+  s_909815e0e45219::t_8e165519497c58 87-96
+  s_909815e0e45219::t_57f41ae17dbc34 10-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "c24e253be00107cc98f0239b29964916a2e7a3f3",
+  "prompts": {},
+  "sessions": {
+    "s_909815e0e45219": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c00e0f55-ca88-42a4-8971-4fe3b4244579",
+        "model": "claude-opus-5"
+      },
+      "human_author": "linyesh <linyesh@amazon.com>"
+    }
+  }
+}
