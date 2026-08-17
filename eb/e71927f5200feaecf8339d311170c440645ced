@@ -1,0 +1,29 @@
+demo/public/gallery.html
+  s_909815e0e45219::t_5241758f1f63c5 6,372-373,382,399-408,413,415,418,422,424,427
+README.md
+  s_909815e0e45219::t_b55fa2e0fbc723 237-241
+demo/App.tsx
+  s_909815e0e45219::t_0404c3877ebba1 6,44,76,78
+demo/items.ts
+  s_909815e0e45219::t_0404c3877ebba1 1-22
+README.zh-CN.md
+  s_909815e0e45219::t_b55fa2e0fbc723 224-225
+demo/i18n.tsx
+  s_909815e0e45219::t_5da54a314589aa 42-44,59,81-82,96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "ebe71927f5200feaecf8339d311170c440645ced",
+  "prompts": {},
+  "sessions": {
+    "s_909815e0e45219": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c00e0f55-ca88-42a4-8971-4fe3b4244579",
+        "model": "claude-opus-5"
+      },
+      "human_author": "linyesh <linyesh@amazon.com>"
+    }
+  }
+}
