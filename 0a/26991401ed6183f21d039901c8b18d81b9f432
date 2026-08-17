@@ -1,0 +1,22 @@
+demo/public/gallery.html
+  s_909815e0e45219::t_8a6ab4c43a4ce6 7-9
+demo/index.html
+  s_909815e0e45219::t_8a6ab4c43a4ce6 11
+  s_909815e0e45219::t_91684bb6791d2b 12-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "0a26991401ed6183f21d039901c8b18d81b9f432",
+  "prompts": {},
+  "sessions": {
+    "s_909815e0e45219": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c00e0f55-ca88-42a4-8971-4fe3b4244579",
+        "model": "claude-opus-5"
+      },
+      "human_author": "linyesh <linyesh@amazon.com>"
+    }
+  }
+}
