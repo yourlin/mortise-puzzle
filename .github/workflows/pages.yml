@@ -33,6 +33,9 @@ jobs:
         env:
           PAGES_BASE: /${{ github.event.repository.name }}/
       - uses: actions/configure-pages@v5
+        # 仓库还没开 Pages 时自动开，免得首次部署因为时序而失败
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist-demo
