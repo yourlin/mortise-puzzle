@@ -1,0 +1,46 @@
+vite.lib.config.ts
+  s_909815e0e45219::t_9a904767c8a2bf 23,33,41
+package.json
+  s_909815e0e45219::t_9a904767c8a2bf 14,52-56,78-79,87-88
+  s_909815e0e45219::t_7878372e81d3ca 107-108
+  s_909815e0e45219::t_4799147295c764 89
+src/vue/PuzzleBoard.ts
+  s_909815e0e45219::t_ee3caf366a4eef 1-197
+README.zh-CN.md
+  s_909815e0e45219::t_9ad6ff40161efd 28-30,38-39,43,85-140
+  s_909815e0e45219::t_9a78ad0626f480 141
+src/shared.ts
+  s_909815e0e45219::t_286a8f83b78403 1-59
+src/vue/index.ts
+  s_909815e0e45219::t_9a904767c8a2bf 1-6
+src/react/PuzzleBoard.tsx
+  s_909815e0e45219::t_03a49ea6141533 3,44,46,66
+.github/workflows/ci.yml
+  s_909815e0e45219::t_9ad6ff40161efd 38-39
+tsconfig.json
+  s_909815e0e45219::t_a4cd9647b558e5 28-30
+vite.config.ts
+  s_909815e0e45219::t_a4cd9647b558e5 19
+README.md
+  s_909815e0e45219::t_9ad6ff40161efd 51
+  s_909815e0e45219::t_639b8d1f1b883d 34-36,45-47,94-151
+  s_909815e0e45219::t_1242a5f67c4c3f 152
+package-lock.json
+  s_909815e0e45219::t_13b09688d2bb94 26-27,1260-1380,1603-1615,3177-3198
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "ffc305d31050b92ed86adcfb9de5ff29d30ec7f7",
+  "prompts": {},
+  "sessions": {
+    "s_909815e0e45219": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c00e0f55-ca88-42a4-8971-4fe3b4244579",
+        "model": "claude-opus-5"
+      },
+      "human_author": "linyesh <linyesh@amazon.com>"
+    }
+  }
+}
