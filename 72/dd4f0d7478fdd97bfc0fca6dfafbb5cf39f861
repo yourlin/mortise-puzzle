@@ -1,0 +1,27 @@
+.gitignore
+  s_909815e0e45219::t_23f9438458edf4 1-3
+package-lock.json
+  s_909815e0e45219::t_fbcb9147786d00 1-1359
+package.json
+  s_909815e0e45219::t_d265fbe8a5d553 1-36
+src/components/Lightbox.tsx
+  s_909815e0e45219::t_302a521f3eb936 1-131
+src/styles.css
+  s_909815e0e45219::t_1b61e563a6dcfe 1-525
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "72dd4f0d7478fdd97bfc0fca6dfafbb5cf39f861",
+  "prompts": {},
+  "sessions": {
+    "s_909815e0e45219": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c00e0f55-ca88-42a4-8971-4fe3b4244579",
+        "model": "claude-opus-5"
+      },
+      "human_author": "linyesh <linyesh@amazon.com>"
+    }
+  }
+}
