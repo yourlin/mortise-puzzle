@@ -1,6 +1,6 @@
 {
   "name": "mortise-puzzle",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Cut any image into a 2x2 mortise-and-tenon jigsaw and render each piece as pseudo-3D with pure CSS. 榫卯拼图切割算法 + CSS 伪 3D 渲染。",
   "keywords": [
     "jigsaw",
@@ -40,19 +40,34 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./react": {
-      "types": "./dist/react/index.d.ts",
-      "import": "./dist/react/index.js",
-      "require": "./dist/react/index.cjs"
+      "import": {
+        "types": "./dist/react/index.d.ts",
+        "default": "./dist/react/index.js"
+      },
+      "require": {
+        "types": "./dist/react/index.d.cts",
+        "default": "./dist/react/index.cjs"
+      }
     },
     "./vue": {
-      "types": "./dist/vue/index.d.ts",
-      "import": "./dist/vue/index.js",
-      "require": "./dist/vue/index.cjs"
+      "import": {
+        "types": "./dist/vue/index.d.ts",
+        "default": "./dist/vue/index.js"
+      },
+      "require": {
+        "types": "./dist/vue/index.d.cts",
+        "default": "./dist/vue/index.cjs"
+      }
     },
     "./styles.css": "./dist/styles.css",
     "./package.json": "./package.json"
@@ -63,7 +78,7 @@
   "scripts": {
     "dev": "vite",
     "build": "npm run build:lib && npm run build:demo",
-    "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json",
+    "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json && node scripts/emit-cts.mjs",
     "build:demo": "vite build",
     "preview": "vite preview",
     "check": "npm run lint && tsc --noEmit && vitest run",
