@@ -294,4 +294,4 @@ alpha 形状逐层向下挤出 —— 每个阴影作用于前一个滤镜的结
 
 ## License
 
-MIT © yourlin
+MIT © MasterLin

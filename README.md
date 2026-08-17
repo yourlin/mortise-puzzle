@@ -316,4 +316,4 @@ same path stroked twice: a lit inner wall plus a dark outline.
 
 ## License
 
-MIT © yourlin
+MIT © MasterLin

@@ -24,7 +24,7 @@
     "url": "https://github.com/yourlin/mortise-puzzle/issues"
   },
   "license": "MIT",
-  "author": "yourlin",
+  "author": "MasterLin",
   "type": "module",
   "sideEffects": [
     "**/*.css"
