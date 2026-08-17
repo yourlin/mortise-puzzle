@@ -1,0 +1,21 @@
+demo/index.html
+  s_909815e0e45219::t_54b4492d733c22 12
+demo/public/favicon.svg
+  s_909815e0e45219::t_537215d65cdb31 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "4aeadf76826438bed953f9337df1ffc9bb335470",
+  "prompts": {},
+  "sessions": {
+    "s_909815e0e45219": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c00e0f55-ca88-42a4-8971-4fe3b4244579",
+        "model": "claude-opus-5"
+      },
+      "human_author": "linyesh <linyesh@amazon.com>"
+    }
+  }
+}
