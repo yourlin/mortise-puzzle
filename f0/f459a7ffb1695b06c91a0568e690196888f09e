@@ -1,0 +1,73 @@
+.github/workflows/ci.yml
+  s_909815e0e45219::t_ea0304dc45bc40 1-39
+.gitignore
+  s_909815e0e45219::t_e217492445d865 1-5
+LICENSE
+  s_909815e0e45219::t_f02a73a99507ab 1-21
+README.md
+  s_909815e0e45219::t_93436e7f0be5f6 1-306
+README.zh-CN.md
+  s_909815e0e45219::t_687b7fa6bbb13b 1-285
+demo/App.tsx
+  s_909815e0e45219::t_b87b4d1c51ea1b 1-240
+demo/Lightbox.tsx
+  s_909815e0e45219::t_1148b07405aca9 1-179
+demo/demo.css
+  s_909815e0e45219::t_2464f6964fb0be 1-577
+demo/i18n.tsx
+  s_909815e0e45219::t_4d6aeb4058a945 1-142
+demo/index.html
+  s_909815e0e45219::t_2a7a2cbf310f34 1-29
+demo/items.ts
+  s_909815e0e45219::t_7f0305c3dba474 1-22
+demo/main.tsx
+  s_909815e0e45219::t_0cfa7af4c37c2e 1-11
+demo/public/gallery.html
+  s_909815e0e45219::t_e676e926b2d499 1-529
+package-lock.json
+  s_909815e0e45219::t_7a5de0f41b423d 1-3286
+package.json
+  s_909815e0e45219::t_d4f66f6ef9a04e 1-110
+src/index.ts
+  s_909815e0e45219::t_89de7f730e428f 1-8
+src/react/PuzzleBoard.tsx
+  s_909815e0e45219::t_19455b177116ee 1-192
+src/react/index.ts
+  s_909815e0e45219::t_580ae490c1ed0a 1-7
+src/vue/index.ts
+  s_909815e0e45219::t_34cb05b5dee4b1 1-6
+tsconfig.json
+  s_909815e0e45219::t_9c5bf5b9dbd5d2 1-41
+tsconfig.lib.json
+  s_909815e0e45219::t_f4e5c2e5195fab 1-21
+vite.config.ts
+  s_909815e0e45219::t_4016b802090b7c 1-27
+vite.lib.config.ts
+  s_909815e0e45219::t_718762aae2e072 1-58
+vitest.config.ts
+  s_909815e0e45219::t_886cd3769b1e99 1-9
+src/cut.test.ts
+  s_909815e0e45219::t_87428c68bc48ab 1-176
+src/cut.ts
+  s_909815e0e45219::t_88a9bfc66889c2 1-409
+src/shared.ts
+  s_909815e0e45219::t_8553463432bc47 1-59
+src/vue/PuzzleBoard.ts
+  s_909815e0e45219::t_7b7db2aae674e6 1-197
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "f0f459a7ffb1695b06c91a0568e690196888f09e",
+  "prompts": {},
+  "sessions": {
+    "s_909815e0e45219": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c00e0f55-ca88-42a4-8971-4fe3b4244579",
+        "model": "claude-opus-5"
+      },
+      "human_author": "linyesh <linyesh@amazon.com>"
+    }
+  }
+}
