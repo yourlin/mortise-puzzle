@@ -353,7 +353,7 @@ html[data-lang='zh'] .cell__en {
   padding: 0;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 26px 22px;
+  gap: 32px 22px;
 }
 .cell { position: relative; }
 /* 散开时拼片会探出格子，抬高层级免得被邻格盖住 */
@@ -400,13 +400,17 @@ html[data-lang='zh'] .cell__en {
 }
 .cell__zh {
   display: block;
-  margin-top: 8px;
+  position: relative; /* 兜底：万一还是有拼片探出来，文字也压在它上面 */
+  z-index: 2;
+  margin-top: 10px;
   font-family: 'LXGW WenKai', 'PingFang SC', serif;
   font-size: 16px;
   letter-spacing: .05em;
 }
 .cell__en {
   display: block;
+  position: relative;
+  z-index: 2;
   margin-top: 2px;
   font-size: 10.5px;
   font-weight: 700;

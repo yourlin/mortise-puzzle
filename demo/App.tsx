@@ -1,6 +1,6 @@
 import { useState, type CSSProperties } from 'react';
 import { motion } from 'motion/react';
-import { PuzzleBoard } from 'mortise-puzzle/react';
+import { PuzzleBoard, PUZZLE_BASE } from 'mortise-puzzle/react';
 import { CUT_STYLES, CUT_STYLE_IDS, type CutStyleId } from 'mortise-puzzle';
 import { Lightbox } from './Lightbox.tsx';
 import { ITEMS, imgSrc } from './items.ts';
@@ -57,6 +57,9 @@ export default function App() {
   const grid = GRIDS[gridIdx]!;
   // 网格越密，单元格越小 —— 散开量得跟着收，否则 4×4 拆开就糊成一团
   const cellScale = 2 / Math.max(grid.cols, grid.rows);
+  // 拼片朝外散开会溢出格子、压住下面的标题。按散开量给容器等比内缩，
+  // 于是散开是在格子内部完成的 —— 拼图整体尺寸不变，不会侵占邻居。
+  const inset = `${((spread * cellScale) / PUZZLE_BASE) * 100}%`;
 
   // 拖进来的自定义图片：证明「任意图片、任意比例」不是嘴上说的
   const [custom, setCustom] = useState<{ url: string; name: string } | null>(null);
@@ -206,6 +209,7 @@ export default function App() {
                   cut={cutFor(cut, i)}
                   spread={spread * cellScale}
                   lift={spread * cellScale * 0.9}
+                  style={{ padding: inset }}
                   lazy
                   alt={primary(lang, lp.zh, lp.en)}
                 />

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, type PointerEvent } from 'react';
 import { AnimatePresence, motion, useSpring } from 'motion/react';
-import { PuzzleBoard } from 'mortise-puzzle/react';
+import { PuzzleBoard, PUZZLE_BASE } from 'mortise-puzzle/react';
 import { CUT_STYLES, type CutStyleId } from 'mortise-puzzle';
 import { primary, secondary as secondaryLabel, type Lang, type Strings } from './i18n.tsx';
 export interface LightboxItem {
@@ -135,6 +135,7 @@ export function Lightbox({
                   cut={cutFor(index!)}
                   spread={spread * cellScale}
                   lift={spread * cellScale * 1.5}
+                  style={{ padding: `${((spread * cellScale) / PUZZLE_BASE) * 100}%` }}
                   fit="exact"
                   alt={primary(lang, lp.zh, lp.en)}
                 />

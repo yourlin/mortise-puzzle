@@ -8,9 +8,11 @@ elements.
 
 ### ▶ [Live demo](https://yourlin.github.io/mortise-puzzle/)
 
-Drag the spread slider, switch between seven tenon shapes and grid sizes, **drop your
-own image onto the page** to cut it instantly, then click any tile and move the mouse
-to tilt it in 3D.
+[![mortise-puzzle demo](https://raw.githubusercontent.com/yourlin/mortise-puzzle/main/docs/screenshot.jpg)](https://yourlin.github.io/mortise-puzzle/)
+
+*The demo in "mix" mode — every image cut with a different tenon style.* Drag the spread
+slider, switch between eight tenon shapes and grid sizes, **drop your own image onto the
+page** to cut it instantly, then click any tile and move the mouse to tilt it in 3D.
 
 ## Features
 
@@ -89,6 +91,17 @@ To spread the pieces on hover, no state needed:
 
 ```css
 .card:hover .mp-slot { --mp-spread-hover: 13px; }
+```
+
+Spreading makes the pieces drift outside the container — fine on its own, but it will
+cover whatever sits below. To keep the puzzle inside its box, pad the container in
+proportion to `spread`; the board scales down to compensate, so the puzzle stays the
+same overall size and the pieces separate inward:
+
+```tsx
+import { PuzzleBoard, PUZZLE_BASE } from 'mortise-puzzle/react';
+
+<PuzzleBoard src="/photo.png" spread={spread} style={{ padding: `${(spread / PUZZLE_BASE) * 100}%` }} />;
 ```
 
 ### Vue 3

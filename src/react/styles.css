@@ -24,6 +24,8 @@
   top: 50%;
   left: 50%;
   transform-style: preserve-3d;
+  /* 使用方按散开量给容器内缩时，缩放要跟拼片位移同步过渡，否则会跳一下 */
+  transition: transform var(--mp-duration, .52s) var(--mp-ease, cubic-bezier(.22, .92, .24, 1.02));
 }
 
 .mp-piece {
