@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "allowImportingTsExtensions": true,
+    "types": [
+      "vite/client",
+      "node"
+    ],
+    "paths": {
+      "mortise-puzzle": [
+        "./src/index.ts"
+      ],
+      "mortise-puzzle/react": [
+        "./src/react/index.ts"
+      ],
+      "mortise-puzzle/vue": [
+        "./src/vue/index.ts"
+      ]
+    }
+  },
+  "include": [
+    "src",
+    "demo",
+    "scripts",
+    "vite.config.ts",
+    "vite.lib.config.ts"
+  ]
+}

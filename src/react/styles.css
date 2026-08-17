@@ -1,0 +1,97 @@
+/**
+ * mortise-puzzle —— 拼片的伪 3D 渲染
+ *
+ * 这是组件工作所必需的最小样式，外观全部通过 CSS 变量定制，
+ * 不含任何页面级布局。所有类名与变量都带 mp- 前缀。
+ */
+
+.mp-slot {
+  position: relative;
+  width: 100%;
+  /* 组件在 fit="exact" 时会内联注入图片真实比例，这里只兜底 */
+  aspect-ratio: 1;
+  perspective: var(--mp-perspective, 1100px);
+  transform-style: preserve-3d;
+  /* spread-base 由组件内联注入，spread-hover 留给使用方在 :hover 里叠加 ——
+     拆成两个变量是为了避免内联样式与 CSS 规则抢优先级 */
+  --mp-spread: calc(var(--mp-spread-base, 0px) + var(--mp-spread-hover, 0px));
+}
+
+/* 路径坐标系（宽固定、高随图片比例）。尺寸、居中偏移与缩放比由组件内联，
+   于是同一副路径能贴合任何显示尺寸 */
+.mp-board {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-style: preserve-3d;
+}
+
+.mp-piece {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  --mp-z: calc(var(--mp-z-base, 0px) + var(--mp-z-hover, 0px));
+  transform: translate3d(
+    calc(var(--mp-ox) * var(--mp-spread)),
+    calc(var(--mp-oy) * var(--mp-spread)),
+    var(--mp-z)
+  );
+  transition: transform var(--mp-duration, .52s) var(--mp-ease, cubic-bezier(.22, .92, .24, 1.02));
+}
+
+/* 顶面。clip-path 裁出榫卯外形，链式 drop-shadow 沿裁剪后的 alpha 形状逐层
+   向下挤出侧壁，最后一层是落到台面上的柔影 —— 这就是伪 3D 的厚度来源。 */
+.mp-piece__face {
+  position: absolute;
+  inset: 0;
+  background-color: var(--mp-fill, transparent);
+  background-image: var(--mp-img);
+  background-size: var(--mp-zoom, 100%) var(--mp-zoom, 100%);
+  background-position: center;
+  background-repeat: no-repeat;
+  filter:
+    drop-shadow(0 1px 0 var(--mp-wall-1, #CFAF89))
+    drop-shadow(0 1px 0 var(--mp-wall-2, #A17952))
+    drop-shadow(0 1px 0 var(--mp-wall-3, #7E5C3A))
+    drop-shadow(var(--mp-shadow, 0 6px 9px rgba(74, 48, 22, .34)));
+}
+
+/* 顶面光照：斜上方主光 + 底部环境暗角 */
+.mp-piece__face::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(146deg, rgba(255, 255, 255, var(--mp-gloss, .26)) 0%, rgba(255, 255, 255, 0) 40%),
+    radial-gradient(135% 105% at 50% 120%, rgba(92, 60, 26, var(--mp-ambient, .22)), transparent 56%);
+}
+
+/* 切口线：同一条 path 描两次 —— 亮线下移当受光内壁，暗线压在轮廓上。
+   svg 用同一 path 裁剪，所以描边只留在本片内侧，不会糊到邻片。 */
+.mp-piece__seam {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* 光照层与切口线都按图片自身的 alpha 遮罩。
+   少了这步，它们会画在图片的透明区上，看着就像凭空多出一块背景色。 */
+.mp-piece__face::after,
+.mp-piece__seam {
+  -webkit-mask-image: var(--mp-img);
+  mask-image: var(--mp-img);
+  -webkit-mask-size: var(--mp-zoom, 100%) var(--mp-zoom, 100%);
+  mask-size: var(--mp-zoom, 100%) var(--mp-zoom, 100%);
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+
+.mp-seam { fill: none; }
+.mp-seam--hi { stroke: var(--mp-seam-hi, rgba(255, 252, 243, .5)); stroke-width: var(--mp-seam-w, 2.4); }
+.mp-seam--lo { stroke: var(--mp-seam-lo, rgba(86, 54, 24, .55)); stroke-width: var(--mp-seam-w, 2.2); }
+
+@media (prefers-reduced-motion: reduce) {
+  .mp-piece { transition: none; }
+}

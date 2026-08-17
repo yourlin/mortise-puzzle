@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Type check
+        run: npx tsc --noEmit
+      - name: Test
+        run: npm run test
+      - name: Build library
+        run: npm run build:lib
+      - name: Build demo
+        run: npm run build:demo
+      # 确认两种模块格式都能被真正加载
+      - name: Smoke test the built package
+        run: |
+          node -e "const { makePuzzle } = require('./dist/index.cjs'); if (makePuzzle(400, 300, { cols: 3, rows: 2 }).pieces.length !== 6) process.exit(1)"
+          node --input-type=module -e "import { makePuzzle } from './dist/index.js'; if (makePuzzle(400).pieces.length !== 4) process.exit(1)"
+          node -e "const { PuzzleBoard } = require('./dist/react/index.cjs'); if (typeof PuzzleBoard !== 'function') process.exit(1)"
+          node -e "const { PuzzleBoard } = require('./dist/vue/index.cjs'); if (!PuzzleBoard?.props?.src) process.exit(1)"

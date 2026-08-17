@@ -1,0 +1,110 @@
+{
+  "name": "mortise-puzzle",
+  "version": "0.1.0",
+  "description": "Cut any image into a 2x2 mortise-and-tenon jigsaw and render each piece as pseudo-3D with pure CSS. 榫卯拼图切割算法 + CSS 伪 3D 渲染。",
+  "keywords": [
+    "jigsaw",
+    "puzzle",
+    "mortise-and-tenon",
+    "tenon",
+    "clip-path",
+    "pseudo-3d",
+    "svg-path",
+    "react",
+    "vue",
+    "榫卯",
+    "拼图"
+  ],
+  "homepage": "https://yourlin.github.io/mortise-puzzle/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourlin/mortise-puzzle.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourlin/mortise-puzzle/issues"
+  },
+  "license": "MIT",
+  "author": "yourlin",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.js",
+      "require": "./dist/react/index.cjs"
+    },
+    "./vue": {
+      "types": "./dist/vue/index.d.ts",
+      "import": "./dist/vue/index.js",
+      "require": "./dist/vue/index.cjs"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run build:lib && npm run build:demo",
+    "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json",
+    "build:demo": "vite build",
+    "preview": "vite preview",
+    "check": "npm run lint && tsc --noEmit && vitest run",
+    "prepublishOnly": "npm run check && npm run build:lib",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18",
+    "vue": ">=3.3"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^6.0.5",
+    "eslint": "^10.8.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.11.0",
+    "motion": "^13.1.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.67.0",
+    "vite": "^8.2.1",
+    "vitest": "^4.1.10",
+    "vue": "^3.5.41"
+  }
+}

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Handmade Scenes · mortise-puzzle demo</title>
+<link rel="icon" type="image/png" sizes="16x16" href="./favicon-16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="./favicon.png" />
+<link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..800,0..100,0..1;1,9..144,400..700,0..100,0..1&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" rel="stylesheet" />
+<style>
+  :root {
+    /* 取色自图片本身的粘土调色板 */
+    --clay-paper:   #EFE3D2;
+    --clay-paper-2: #E4D5BF;
+    --clay-card:    #FBF6EE;
+    --clay-ink:     #4A3A2C;
+    --clay-ink-soft:#8B7660;
+    --clay-orange:  #E1762A;
+    --clay-teal:    #2F7F8C;
+    --clay-blue:    #3C7CB6;
+    --clay-green:   #6E9A5B;
+
+    --r-lg: 34px;
+    --r-md: 24px;
+
+    /* 粘土的关键：厚实的下方投影 + 内侧高光 */
+    --lift-1: 0 2px 0 rgba(255,255,255,.9) inset,
+              0 -3px 0 rgba(160,132,102,.14) inset,
+              0 10px 18px -8px rgba(96,72,48,.34),
+              0 3px 0 rgba(178,150,118,.35);
+    --lift-2: 0 2px 0 rgba(255,255,255,.95) inset,
+              0 -3px 0 rgba(160,132,102,.14) inset,
+              0 26px 34px -14px rgba(96,72,48,.38),
+              0 6px 0 rgba(178,150,118,.32);
+    --press:  0 1px 0 rgba(255,255,255,.7) inset,
+              0 2px 8px -4px rgba(96,72,48,.4);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Nunito", "PingFang SC", "Hiragino Sans GB", sans-serif;
+    color: var(--clay-ink);
+    background:
+      radial-gradient(120% 80% at 50% -10%, #FFFBF4 0%, transparent 60%),
+      radial-gradient(90% 60% at 100% 100%, #E7EFE4 0%, transparent 55%),
+      radial-gradient(80% 55% at 0% 90%, #EDE2F0 0%, transparent 50%),
+      var(--clay-paper);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 纸张颗粒感 */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 999;
+    opacity: .05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- 外框：像原图那样的一张粘土板 ---------- */
+  .board {
+    max-width: 1180px;
+    margin: 46px auto 80px;
+    padding: 74px 42px 56px;
+    position: relative;
+    border-radius: 46px;
+    background:
+      linear-gradient(180deg, #FDF8F1 0%, #F4EADB 100%);
+    box-shadow: var(--lift-2);
+  }
+  /* 双层描边装饰 */
+  .board::after {
+    content: "";
+    position: absolute; inset: 14px;
+    border-radius: 34px;
+    border: 2px dashed rgba(160,132,102,.28);
+    pointer-events: none;
+  }
+
+  /* ---------- 标题牌 ---------- */
+  header {
+    position: absolute;
+    top: -30px; left: 50%;
+    transform: translateX(-50%) rotate(-1.2deg);
+    padding: 16px 46px 18px;
+    border-radius: 22px;
+    background: linear-gradient(170deg, #3E8C97, #2A6B78);
+    box-shadow:
+      0 2px 0 rgba(255,255,255,.35) inset,
+      0 -4px 0 rgba(0,0,0,.16) inset,
+      0 16px 24px -12px rgba(42,90,100,.6),
+      0 5px 0 #235B66;
+    text-align: center;
+    white-space: nowrap;
+  }
+  header h1 {
+    margin: 0;
+    font-family: "LXGW WenKai", "Fraunces", "Kaiti SC", serif;
+    font-size: clamp(26px, 4.4vw, 40px);
+    letter-spacing: .16em;
+    color: #FFF9EE;
+    text-shadow: 0 2px 0 rgba(0,0,0,.22);
+  }
+  header .en {
+    display: block;
+    margin-top: 4px;
+    font-size: 11px;
+    letter-spacing: .38em;
+    text-transform: uppercase;
+    color: rgba(255,249,238,.72);
+  }
+
+  .intro {
+    text-align: center;
+    max-width: 620px;
+    margin: 8px auto 44px;
+    font-family: "LXGW WenKai", "PingFang SC", serif;
+    font-size: 16px;
+    line-height: 1.9;
+    color: var(--clay-ink-soft);
+  }
+  .intro b { color: var(--clay-orange); font-weight: 600; }
+
+  /* ---------- 网格 ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px 26px;
+  }
+
+  .tile {
+    position: relative;
+    padding: 0 0 18px;
+    border: none;
+    border-radius: var(--r-lg);
+    background: linear-gradient(178deg, var(--clay-card), #F3EADB);
+    box-shadow: var(--lift-1);
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    text-align: center;
+    transition:
+      transform .34s cubic-bezier(.34,1.56,.64,1),
+      box-shadow .34s ease;
+    /* 入场动画 */
+    opacity: 0;
+    animation: pop .6s cubic-bezier(.22,1.4,.5,1) forwards;
+  }
+  /* 贴纸感：每张略微不同的初始旋转 */
+  .tile:nth-child(4n+1) { --tilt: -1.4deg; }
+  .tile:nth-child(4n+2) { --tilt:  1.1deg; }
+  .tile:nth-child(4n+3) { --tilt: -.7deg; }
+  .tile:nth-child(4n)   { --tilt:  1.6deg; }
+
+  @keyframes pop {
+    from { opacity: 0; transform: translateY(26px) scale(.9) rotate(var(--tilt)); }
+    to   { opacity: 1; transform: translateY(0) scale(1) rotate(var(--tilt)); }
+  }
+
+  .tile:hover, .tile:focus-visible {
+    transform: translateY(-10px) scale(1.045) rotate(0deg);
+    box-shadow: var(--lift-2);
+    outline: none;
+    z-index: 2;
+  }
+  .tile:active { transform: translateY(-2px) scale(1.01) rotate(0deg); box-shadow: var(--press); }
+
+  .tile img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    filter: drop-shadow(0 6px 6px rgba(120,94,66,.16));
+  }
+
+  .num {
+    position: absolute;
+    top: 12px; left: 12px;
+    width: 30px; height: 30px;
+    display: grid; place-items: center;
+    border-radius: 50%;
+    background: linear-gradient(165deg, #3E8C97, #276874);
+    color: #FFF7E9;
+    font-size: 13px; font-weight: 700;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.4) inset,
+      0 4px 8px -3px rgba(39,104,116,.7),
+      0 2px 0 #205662;
+  }
+
+  .tile h3 {
+    margin: 2px 14px 4px;
+    font-family: "LXGW WenKai", "PingFang SC", serif;
+    font-size: 16.5px;
+    font-weight: 400;
+    letter-spacing: .05em;
+    color: var(--clay-ink);
+  }
+  .tile p {
+    margin: 0 12px;
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.45;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--clay-ink-soft);
+  }
+
+  /* ---------- 灯箱 ---------- */
+  .lightbox {
+    position: fixed; inset: 0; z-index: 1000;
+    display: none;
+    place-items: center;
+    padding: 4vh 5vw;
+    background: rgba(58,42,30,.72);
+    backdrop-filter: blur(9px) saturate(.9);
+  }
+  .lightbox.open { display: grid; animation: fade .28s ease both; }
+  @keyframes fade { from { opacity: 0 } to { opacity: 1 } }
+
+  .lb-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 620px; width: 100%;
+    padding: 26px 26px 30px;
+    border-radius: 42px;
+    background: linear-gradient(178deg, #FDF8F0, #F0E5D3);
+    box-shadow: var(--lift-2);
+    animation: rise .38s cubic-bezier(.22,1.4,.5,1) both;
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(28px) scale(.94) }
+    to   { opacity: 1; transform: none }
+  }
+  .lb-card img {
+    width: 100%;
+    max-height: 58vh;
+    object-fit: contain;
+    filter: drop-shadow(0 14px 16px rgba(110,84,58,.24));
+  }
+  .lb-num {
+    font-size: 12px; font-weight: 700; letter-spacing: .3em;
+    color: var(--clay-teal);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .lb-zh {
+    margin: 4px 0 6px;
+    font-family: "LXGW WenKai", "PingFang SC", serif;
+    font-size: 27px; letter-spacing: .1em;
+    color: var(--clay-ink);
+  }
+  .lb-en {
+    margin: 0;
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--clay-orange);
+    text-align: center;
+  }
+
+  /* 圆润粘土按钮 */
+  .nav, .close {
+    position: absolute;
+    border: none; cursor: pointer;
+    display: grid; place-items: center;
+    background: linear-gradient(170deg, #FFFCF6, #EADCC6);
+    color: var(--clay-ink);
+    box-shadow:
+      0 2px 0 rgba(255,255,255,.9) inset,
+      0 10px 16px -8px rgba(70,50,32,.5),
+      0 4px 0 rgba(178,150,118,.55);
+    transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+  }
+  .nav {
+    top: 50%; width: 56px; height: 56px;
+    border-radius: 50%;
+    font-size: 22px; line-height: 1;
+    transform: translateY(-50%);
+  }
+  .nav.prev { left: -76px; }
+  .nav.next { right: -76px; }
+  .nav:hover { transform: translateY(-50%) scale(1.12); }
+  .nav:active { transform: translateY(-50%) scale(.96); box-shadow: var(--press); }
+
+  .close {
+    top: -18px; right: -18px;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    font-size: 19px;
+    background: linear-gradient(170deg, #EE8A44, #D2621F);
+    color: #FFF8EC;
+    box-shadow:
+      0 2px 0 rgba(255,255,255,.35) inset,
+      0 10px 16px -8px rgba(150,74,18,.7),
+      0 4px 0 #B4531A;
+  }
+  .close:hover { transform: scale(1.12) rotate(90deg); }
+
+  .hint {
+    margin-top: 18px;
+    text-align: center;
+    font-size: 11px; letter-spacing: .22em;
+    text-transform: uppercase;
+    color: rgba(255,246,232,.6);
+  }
+
+  .lang-btn {
+    position: absolute;
+    top: 22px;
+    right: 26px;
+    z-index: 6;
+    border: none;
+    cursor: pointer;
+    padding: 7px 16px;
+    border-radius: 99px;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    color: #6B563F;
+    background: linear-gradient(168deg, #FFFCF6, #E8D9C1);
+    box-shadow: 0 2px 0 rgba(255, 255, 255, .9) inset, 0 6px 10px -6px rgba(90, 64, 38, .4),
+      0 3px 0 rgba(178, 150, 118, .5);
+  }
+  html[data-lang='en'] header h1 { font-family: 'Fraunces', Georgia, serif; letter-spacing: .02em; }
+  html[data-lang='en'] .intro,
+  html[data-lang='en'] .tile h3,
+  html[data-lang='en'] .lb-zh { font-family: 'Nunito', system-ui, sans-serif; }
+  html[data-lang='en'] .tile h3 { font-weight: 700; font-size: 15px; }
+  html[data-lang='zh'] .tile p { text-transform: none; font-family: 'LXGW WenKai', serif; }
+
+  footer {
+    text-align: center;
+    margin-top: 46px;
+    font-size: 12px; letter-spacing: .2em;
+    text-transform: uppercase;
+    color: rgba(139,118,96,.75);
+  }
+
+  /* ---------- 响应式 ---------- */
+  @media (max-width: 980px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 720px) {
+    .board { margin: 40px 14px 60px; padding: 66px 20px 42px; border-radius: 34px; }
+    .board::after { inset: 9px; border-radius: 26px; }
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 20px 16px; }
+    .nav.prev { left: 6px; } .nav.next { right: 6px; }
+    .nav { width: 46px; height: 46px; }
+    .lb-card { padding: 20px 18px 24px; border-radius: 32px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+    .tile { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<main class="board">
+  <header>
+    <h1 id="title">Handmade Scenes</h1>
+    <span class="en">mortise-puzzle · demo artwork</span>
+  </header>
+
+  <button id="lang" class="lang-btn">中文</button>
+
+  <p class="intro" id="intro"></p>
+
+  <div class="grid" id="grid"></div>
+
+  <footer id="foot">Felted scenes · full size</footer>
+</main>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="图片查看">
+  <div class="lb-card" role="document">
+    <button class="close" id="btnClose" aria-label="关闭">✕</button>
+    <button class="nav prev" id="btnPrev" aria-label="上一张">‹</button>
+    <button class="nav next" id="btnNext" aria-label="下一张">›</button>
+    <img id="lbImg" src="" alt="" />
+    <span class="lb-num" id="lbNum"></span>
+    <h2 class="lb-zh" id="lbZh"></h2>
+    <p class="lb-en" id="lbEn"></p>
+  </div>
+</div>
+
+<script>
+  const LPS = [
+    { n: 1,  file: "01-bear-picnic.png",       zh: "小熊野餐",       en: "Bear's Picnic" },
+    { n: 2,  file: "02-kitten-bakery.png",     zh: "小猫面包店",     en: "Kitten Bakery" },
+    { n: 3,  file: "03-bunny-garden.png",      zh: "兔子浇花",       en: "Bunny's Garden" },
+    { n: 4,  file: "04-penguin-ice-cream.png", zh: "企鹅冰淇淋车",   en: "Penguin Ice Cream" },
+    { n: 5,  file: "05-fox-camping.png",       zh: "狐狸露营",       en: "Fox Camping" },
+    { n: 6,  file: "06-panda-boba.png",        zh: "熊猫奶茶铺",     en: "Panda Boba" },
+    { n: 7,  file: "07-duckling-rain.png",     zh: "小鸭戏雨",       en: "Duckling in the Rain" },
+    { n: 8,  file: "08-hamster-reading.png",   zh: "仓鼠读书",       en: "Hamster Reading" },
+    { n: 9,  file: "09-koala-space.png",       zh: "考拉漫游太空",   en: "Koala in Space" },
+    { n: 10, file: "10-capybara-onsen.png",    zh: "水豚泡温泉",     en: "Capybara Onsen" },
+  ];
+
+  const STR = {
+    en: {
+      title: 'Handmade Scenes',
+      intro:
+        'The demo artwork at full size — a set of <b>felted miniature scenes</b>.<br />' +
+        'Click a tile to enlarge, <b>← →</b> to flip through, <b>Esc</b> to close.<br />' +
+        '<a href="./" style="color:var(--clay-orange);text-decoration:none;font-weight:600;">← Back to the jigsaw</a>',
+      foot: 'Felted scenes · full size',
+      toggle: '中文',
+    },
+    zh: {
+      title: '手作小景',
+      intro:
+        'demo 用的整图 —— 一组<b>羊毛毡小场景</b>。<br />' +
+        '点一下卡片放大细看，用 <b>← →</b> 翻页，<b>Esc</b> 收起。<br />' +
+        '<a href="./" style="color:var(--clay-orange);text-decoration:none;font-weight:600;">← 回到榫卯拼图</a>',
+      foot: '羊毛毡小景 · 整图版',
+      toggle: 'EN',
+    },
+  };
+
+  const readLang = () => {
+    const q = new URLSearchParams(location.search).get('lang');
+    if (q === 'en' || q === 'zh') return q;
+    const saved = localStorage.getItem('mortise-puzzle:lang');
+    return saved === 'en' || saved === 'zh' ? saved : 'en';
+  };
+  let lang = readLang();
+
+  function applyLang() {
+    const s = STR[lang];
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+    document.documentElement.dataset.lang = lang;
+    localStorage.setItem('mortise-puzzle:lang', lang);
+    document.getElementById('title').textContent = s.title;
+    document.getElementById('intro').innerHTML = s.intro;
+    document.getElementById('foot').textContent = s.foot;
+    document.getElementById('lang').textContent = s.toggle;
+    // 卡片与灯箱的主 / 副标题按语言互换
+    document.querySelectorAll('.tile').forEach((tile, i) => {
+      const lp = LPS[i];
+      tile.querySelector('h3').textContent = lang === 'zh' ? lp.zh : lp.en;
+      tile.querySelector('p').textContent = lang === 'zh' ? lp.en : lp.zh;
+    });
+    if (box.classList.contains('open')) render(current);
+  }
+
+  const grid = document.getElementById("grid");
+  grid.innerHTML = LPS.map((lp, i) => `
+    <button class="tile" data-index="${i}" style="animation-delay:${60 + i * 55}ms">
+      <span class="num">${lp.n}</span>
+      <img src="img/${lp.file}" alt="${lp.zh} ${lp.en}" loading="lazy" />
+      <h3>${lp.zh}</h3>
+      <p>${lp.en}</p>
+    </button>
+  `).join("");
+
+  const box   = document.getElementById("lightbox");
+  const lbImg = document.getElementById("lbImg");
+  const lbNum = document.getElementById("lbNum");
+  const lbZh  = document.getElementById("lbZh");
+  const lbEn  = document.getElementById("lbEn");
+  let current = 0;
+  let lastFocused = null;
+
+  function render(i) {
+    current = (i + LPS.length) % LPS.length;
+    const lp = LPS[current];
+    lbImg.src = `img/${lp.file}`;
+    lbImg.alt = `${lp.zh} ${lp.en}`;
+    lbNum.textContent = `No. ${String(lp.n).padStart(2, "0")}`;
+    lbZh.textContent = lang === 'zh' ? lp.zh : lp.en;
+    lbEn.textContent = lang === 'zh' ? lp.en : lp.zh;
+  }
+
+  function open(i) {
+    lastFocused = document.activeElement;
+    render(i);
+    box.classList.add("open");
+    document.body.style.overflow = "hidden";
+    document.getElementById("btnNext").focus();
+  }
+
+  function close() {
+    box.classList.remove("open");
+    document.body.style.overflow = "";
+    if (lastFocused) lastFocused.focus();
+  }
+
+  grid.addEventListener("click", (e) => {
+    const tile = e.target.closest(".tile");
+    if (tile) open(Number(tile.dataset.index));
+  });
+
+  document.getElementById("btnClose").onclick = close;
+  document.getElementById("btnPrev").onclick  = () => render(current - 1);
+  document.getElementById("btnNext").onclick  = () => render(current + 1);
+
+  // 点击卡片外的遮罩区域关闭
+  box.addEventListener("click", (e) => { if (e.target === box) close(); });
+
+  document.getElementById('lang').onclick = () => {
+    lang = lang === 'en' ? 'zh' : 'en';
+    applyLang();
+  };
+  applyLang();
+
+  document.addEventListener("keydown", (e) => {
+    if (!box.classList.contains("open")) return;
+    if (e.key === "Escape")     close();
+    if (e.key === "ArrowLeft")  render(current - 1);
+    if (e.key === "ArrowRight") render(current + 1);
+  });
+</script>
+</body>
+</html>

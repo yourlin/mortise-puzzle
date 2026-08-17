@@ -1,0 +1,577 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..700,50;1,9..144,400..600,50&family=Nunito:wght@400;600;700&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css');
+
+/* ══════════════════════════════════════════════════════════════
+   粘土工作台 —— 调色板取自图片本身
+   ══════════════════════════════════════════════════════════════ */
+:root {
+  --paper: #EDE0CD;
+  --paper-hi: #FBF5EB;
+  --ink: #493A2C;
+  --ink-soft: #8A7359;
+  --clay-orange: #DE7429;
+  --clay-teal: #2F7F8C;
+
+  /* 覆盖库的侧壁配色，跟粘土插画统一。想让拼片填满整个方格（而不是保持
+     原图圆角 + 透明留白），把 --mp-fill / --mp-zoom 设成 #F7EBD9 / 122% 即可。 */
+  --mp-wall-1: #CFAF89;
+  --mp-wall-2: #A17952;
+  --mp-wall-3: #7E5C3A;
+
+  --lift: 0 2px 0 rgba(255, 255, 255, .92) inset, 0 -3px 0 rgba(160, 132, 102, .14) inset,
+    0 14px 22px -10px rgba(90, 64, 38, .34), 0 4px 0 rgba(178, 150, 118, .38);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Nunito', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(130% 70% at 50% -10%, #FFFBF3 0%, transparent 58%),
+    radial-gradient(80% 60% at 100% 100%, #E6EFE3 0%, transparent 55%),
+    radial-gradient(70% 50% at 0% 92%, #F0E2E7 0%, transparent 52%),
+    var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 纸张颗粒 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  pointer-events: none;
+  opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ══════════════════════════════════════════════════════════════
+   页面骨架
+   ══════════════════════════════════════════════════════════════ */
+
+.workbench {
+  max-width: 1220px;
+  margin: 54px auto 90px;
+  padding: 78px 44px 52px;
+  position: relative;
+  border-radius: 48px;
+  background: linear-gradient(180deg, #FDF8F1 0%, #F2E7D6 100%);
+  box-shadow: var(--lift);
+}
+.workbench::after {
+  content: '';
+  position: absolute;
+  inset: 15px;
+  border-radius: 36px;
+  border: 2px dashed rgba(160, 132, 102, .26);
+  pointer-events: none;
+}
+
+.masthead {
+  position: absolute;
+  top: -30px;
+  max-width: calc(100% - 140px);
+  left: 50%;
+  transform: translateX(-50%) rotate(-1.1deg);
+  padding: 15px 44px 17px;
+  border-radius: 22px;
+  text-align: center;
+  white-space: nowrap;
+  background: linear-gradient(170deg, #3E8C97, #296976);
+  box-shadow: 0 2px 0 rgba(255, 255, 255, .32) inset, 0 -4px 0 rgba(0, 0, 0, .17) inset,
+    0 16px 24px -12px rgba(42, 90, 100, .6), 0 5px 0 #235B66;
+}
+.masthead h1 {
+  margin: 0;
+  font-family: 'LXGW WenKai', 'Kaiti SC', serif;
+  font-size: clamp(25px, 4vw, 38px);
+  letter-spacing: .17em;
+  color: #FFF9EE;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, .22);
+}
+.masthead__en {
+  display: block;
+  margin-top: 3px;
+  font-size: 10.5px;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: rgba(255, 249, 238, .7);
+}
+
+.lede {
+  max-width: 660px;
+  margin: 6px auto 30px;
+  text-align: center;
+  font-family: 'LXGW WenKai', 'PingFang SC', serif;
+  font-size: 15.5px;
+  line-height: 2;
+  color: var(--ink-soft);
+}
+.lede b { color: var(--clay-orange); font-weight: 600; }
+.lede code {
+  font-family: 'Nunito', monospace;
+  font-size: 13px;
+  white-space: nowrap;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: rgba(160, 132, 102, .16);
+  color: #6B563F;
+}
+
+/* 工具条 */
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  margin: 0 0 34px;
+  padding: 15px 20px;
+  border-radius: 22px;
+  background: linear-gradient(178deg, #FFFDF8, #EFE3D0);
+  box-shadow: 0 2px 0 rgba(255, 255, 255, .9) inset, 0 -2px 0 rgba(160, 132, 102, .12) inset,
+    0 8px 14px -8px rgba(90, 64, 38, .3);
+}
+.toolbar__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+/* 两行之间一道细分隔 */
+.toolbar__row + .toolbar__row {
+  padding-top: 13px;
+  border-top: 1px dashed rgba(160, 132, 102, .3);
+}
+.toolbar__label {
+  font-size: 12px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.toolbar__actions { display: flex; gap: 10px; }
+
+/* 语言开关：贴在工作台右上角 */
+.lang {
+  position: absolute;
+  top: 22px;
+  right: 26px;
+  z-index: 6;
+  border: none;
+  cursor: pointer;
+  padding: 7px 16px;
+  border-radius: 99px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  color: #6B563F;
+  background: linear-gradient(168deg, #FFFCF6, #E8D9C1);
+  box-shadow: 0 2px 0 rgba(255, 255, 255, .9) inset, 0 6px 10px -6px rgba(90, 64, 38, .4),
+    0 3px 0 rgba(178, 150, 118, .5);
+  transition: transform .18s cubic-bezier(.34, 1.56, .64, 1);
+}
+.lang:hover { transform: translateY(-2px); }
+.lang:active { transform: translateY(2px); box-shadow: 0 2px 5px -2px rgba(90, 64, 38, .5); }
+
+/* 英文界面下换掉中文楷体 —— 霞鹜文楷渲染西文并不好看 */
+html[data-lang='en'] .masthead h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(24px, 3.6vw, 34px);
+  letter-spacing: .02em;
+}
+html[data-lang='en'] .lede,
+html[data-lang='en'] .chip,
+html[data-lang='en'] .cell__zh,
+html[data-lang='en'] .lb-zh {
+  font-family: 'Nunito', system-ui, sans-serif;
+}
+html[data-lang='en'] .lede { font-size: 15px; line-height: 1.85; }
+html[data-lang='en'] .cell__zh { font-size: 14.5px; font-weight: 700; }
+html[data-lang='en'] .lb-zh { font-size: 21px; font-weight: 700; letter-spacing: .01em; }
+/* 中文模式下副标题是中文，别再全大写 */
+html[data-lang='zh'] .cell__en,
+html[data-lang='zh'] .masthead__en { text-transform: none; }
+html[data-lang='zh'] .cell__en {
+  font-family: 'LXGW WenKai', 'PingFang SC', serif;
+  font-size: 11.5px;
+  letter-spacing: .04em;
+}
+
+/* 榫卯样式选择 —— 按下去像按进粘土里 */
+.cuts {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+  justify-content: flex-end;
+}
+.chip {
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 7px 15px;
+  border-radius: 99px;
+  font: inherit;
+  font-size: 13px;
+  font-family: 'LXGW WenKai', 'PingFang SC', serif;
+  letter-spacing: .06em;
+  color: #6B563F;
+  background: linear-gradient(168deg, #FFFCF6, #E8D9C1);
+  box-shadow: 0 2px 0 rgba(255, 255, 255, .9) inset, 0 6px 10px -6px rgba(90, 64, 38, .4),
+    0 3px 0 rgba(178, 150, 118, .5);
+  transition: transform .18s cubic-bezier(.34, 1.56, .64, 1), box-shadow .18s, color .18s;
+}
+.chip:hover { transform: translateY(-2px); }
+.chip--on {
+  color: #FFF8EC;
+  background: linear-gradient(168deg, #3E8C97, #276874);
+  box-shadow: 0 2px 0 rgba(255, 255, 255, .28) inset, 0 -3px 0 rgba(0, 0, 0, .16) inset,
+    0 6px 10px -6px rgba(39, 104, 116, .7), 0 3px 0 #205662;
+  transform: none;
+}
+.chip--on:hover { transform: translateY(-1px); }
+.chip--mix {
+  font-weight: 700;
+  letter-spacing: .1em;
+}
+/* 「拖入 / 选图」：把 file input 藏在 chip 里 */
+.chip--file {
+  position: relative;
+  overflow: hidden;
+  color: #FFF8EC;
+  background: linear-gradient(168deg, #EE8A44, #D2621F);
+  box-shadow: 0 2px 0 rgba(255, 255, 255, .3) inset, 0 6px 10px -6px rgba(150, 74, 18, .6),
+    0 3px 0 #B4531A;
+}
+.chip--file input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+/* 拖着图片经过页面时的提示 */
+.page--dropping::after {
+  content: var(--drop-hint, 'Drop to cut it into a jigsaw');
+  position: fixed;
+  inset: 18px;
+  z-index: 800;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  border-radius: 34px;
+  border: 3px dashed rgba(222, 116, 41, .75);
+  background: rgba(255, 248, 236, .78);
+  font-family: 'LXGW WenKai', 'PingFang SC', serif;
+  font-size: 22px;
+  letter-spacing: .16em;
+  color: #C4611C;
+}
+
+/* 拖进来的那张，用橙色徽章区分 */
+.cell--custom .cell__no {
+  background: linear-gradient(165deg, #F2903F, #D2621F);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .4) inset, 0 4px 8px -3px rgba(150, 74, 18, .7),
+    0 2px 0 #AF5019;
+}
+.cell--custom .cell__zh {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.slider em {
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  color: var(--clay-orange);
+  font-weight: 700;
+}
+.slider input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 190px;
+  height: 12px;
+  border-radius: 99px;
+  background: linear-gradient(180deg, #DCC8A9, #EADCC5);
+  box-shadow: 0 2px 4px rgba(90, 64, 38, .28) inset;
+  outline: none;
+}
+.slider input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: grab;
+  background: linear-gradient(165deg, #F2903F, #D2621F);
+  box-shadow: 0 2px 0 rgba(255, 255, 255, .4) inset, 0 5px 8px -3px rgba(150, 74, 18, .7),
+    0 3px 0 #AF5019;
+}
+.slider input[type='range']::-moz-range-thumb {
+  width: 24px; height: 24px; border: none; border-radius: 50%; cursor: grab;
+  background: linear-gradient(165deg, #F2903F, #D2621F);
+}
+
+/* 粘土按钮 */
+.pill {
+  border: none;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 99px;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-decoration: none;
+  color: #FFF8EC;
+  background: linear-gradient(168deg, #EE8A44, #D2621F);
+  box-shadow: 0 2px 0 rgba(255, 255, 255, .35) inset, 0 9px 14px -7px rgba(150, 74, 18, .66),
+    0 4px 0 #B4531A;
+  transition: transform .2s cubic-bezier(.34, 1.56, .64, 1), box-shadow .2s;
+}
+.pill:hover { transform: translateY(-2px); }
+.pill:active { transform: translateY(2px); box-shadow: 0 2px 5px -2px rgba(150, 74, 18, .7); }
+.pill--ghost {
+  color: #6B563F;
+  background: linear-gradient(168deg, #FFFCF6, #E9DAC2);
+  box-shadow: 0 2px 0 rgba(255, 255, 255, .9) inset, 0 9px 14px -8px rgba(90, 64, 38, .4),
+    0 4px 0 rgba(178, 150, 118, .55);
+}
+
+/* ── 网格 ── */
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 26px 22px;
+}
+.cell { position: relative; }
+/* 散开时拼片会探出格子，抬高层级免得被邻格盖住 */
+.cell:hover, .cell:focus-within { z-index: 5; }
+.cell__hit {
+  display: block;
+  width: 100%;
+  padding: 12px 10px 16px;
+  border: none;
+  border-radius: 30px;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition: background .3s;
+}
+.cell__hit:hover,
+.cell__hit:focus-visible {
+  outline: none;
+  background: rgba(255, 255, 255, .42);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .8) inset;
+}
+/* 悬停时四片自动微微散开，露出榫卯咬合处 */
+.cell__hit:hover .mp-slot,
+.cell__hit:focus-visible .mp-slot { --mp-spread-hover: 13px; }
+
+.cell__no {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  z-index: 3;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #FFF7E9;
+  background: linear-gradient(165deg, #3E8C97, #276874);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .4) inset, 0 4px 8px -3px rgba(39, 104, 116, .7),
+    0 2px 0 #205662;
+}
+.cell__zh {
+  display: block;
+  margin-top: 8px;
+  font-family: 'LXGW WenKai', 'PingFang SC', serif;
+  font-size: 16px;
+  letter-spacing: .05em;
+}
+.cell__en {
+  display: block;
+  margin-top: 2px;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.foot {
+  margin-top: 44px;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(139, 118, 96, .75);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   灯箱
+   ══════════════════════════════════════════════════════════════ */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 3vh 5vw;
+  background: rgba(56, 40, 26, .74);
+  backdrop-filter: blur(10px) saturate(.92);
+}
+.lb-card {
+  position: relative;
+  width: 100%;
+  /* 图片是 256×256，灯箱收窄到这个尺寸才不会放大到发虚 */
+  max-width: 440px;
+  padding: 20px 22px 22px;
+  border-radius: 42px;
+  background: linear-gradient(178deg, #FDF8F0, #EFE4D2);
+  box-shadow: var(--lift);
+}
+/* 凹陷托盘：底色比拼片深一档，拼片的暖棕侧壁和落影才立得起来 */
+.lb-stage {
+  cursor: grab;
+  padding: 16px;
+  border-radius: 30px;
+  background: transparent;
+  box-shadow: inset 0 4px 12px rgba(96, 66, 34, .1), inset 0 -2px 0 rgba(255, 255, 255, .45);
+}
+/* 3D 视角层：库组件不管旋转，这层用 motion 驱动 rotateX / rotateY */
+.lb-tilt { transform-style: preserve-3d; }
+/* 灯箱尺寸大，侧壁多加两层，落影也更实 */
+.lb-stage .mp-piece__face {
+  filter:
+    drop-shadow(0 1px 0 var(--mp-wall-1))
+    drop-shadow(0 1px 0 #BB9770)
+    drop-shadow(0 1px 0 var(--mp-wall-2))
+    drop-shadow(0 2px 0 var(--mp-wall-3))
+    drop-shadow(0 12px 16px rgba(74, 48, 22, .42));
+}
+/* 单片悬停抬起，看清底面厚度 */
+.lb-stage .mp-piece:hover { --mp-z-hover: 40px; }
+
+.lb-meta { text-align: center; margin-top: 6px; }
+.lb-no {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--clay-teal);
+}
+.lb-zh {
+  margin: 3px 0 4px;
+  font-family: 'LXGW WenKai', 'PingFang SC', serif;
+  font-size: 23px;
+  font-weight: 400;
+  letter-spacing: .09em;
+}
+.lb-en {
+  margin: 0;
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--clay-orange);
+}
+
+.lb-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.lb-controls .slider input[type='range'] { width: 130px; }
+.seed {
+  font-size: 10.5px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(139, 118, 96, .8);
+}
+.lb-hint {
+  margin: 14px 0 0;
+  text-align: center;
+  font-size: 10.5px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(139, 118, 96, .7);
+}
+
+.btn {
+  position: absolute;
+  border: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  background: linear-gradient(168deg, #FFFCF6, #EADCC6);
+  box-shadow: 0 2px 0 rgba(255, 255, 255, .9) inset, 0 10px 16px -8px rgba(70, 50, 32, .5),
+    0 4px 0 rgba(178, 150, 118, .55);
+  transition: transform .2s cubic-bezier(.34, 1.56, .64, 1);
+}
+.btn--nav {
+  top: 46%;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  font-size: 24px;
+  line-height: 1;
+  transform: translateY(-50%);
+}
+.btn--prev { left: -68px; }
+.btn--next { right: -68px; }
+.btn--nav:hover { transform: translateY(-50%) scale(1.12); }
+.btn--close {
+  top: -16px;
+  right: -16px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font-size: 18px;
+  color: #FFF8EC;
+  background: linear-gradient(168deg, #EE8A44, #D2621F);
+  box-shadow: 0 2px 0 rgba(255, 255, 255, .35) inset, 0 10px 16px -8px rgba(150, 74, 18, .7),
+    0 4px 0 #B4531A;
+}
+.btn--close:hover { transform: scale(1.12) rotate(90deg); }
+
+/* ══════════════════════════════════════════════════════════════
+   响应式 & 无障碍
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 1000px) {
+  .grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 720px) {
+  .workbench { margin: 42px 12px 60px; padding: 66px 16px 40px; border-radius: 34px; }
+  .workbench::after { inset: 9px; border-radius: 26px; }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 16px 12px; }
+  .toolbar { justify-content: center; }
+  .btn--prev { left: 4px; }
+  .btn--next { right: 4px; }
+  .btn--nav { width: 44px; height: 44px; }
+  .lb-card { padding: 18px 16px 20px; border-radius: 32px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill, .btn { transition: none; }
+}
