@@ -1,0 +1,35 @@
+src/cut.ts
+  s_909815e0e45219::t_7e38483a3cb3f7 98-154
+  s_909815e0e45219::t_809efc9054b395 216-222
+README.md
+  s_909815e0e45219::t_f25da232bf999c 23-24,125,180-182
+demo/App.tsx
+  s_909815e0e45219::t_8351b5fdc0b2d6 1,7,52,74-77,86,101-104,106-107,111,113,118,128,134,137,143,156,168,175,181,183-184,210,212-215,222,232-233
+demo/Lightbox.tsx
+  s_909815e0e45219::t_0f9fc5b76c2dd7 5,22-23,34-45,108,139,145-147,155,158,165,169-170,173
+README.zh-CN.md
+  s_909815e0e45219::t_f25da232bf999c 20-21,117,170-172
+demo/demo.css
+  s_909815e0e45219::t_0dd481414a1e83 75,156-203,215,254
+demo/public/gallery.html
+  s_909815e0e45219::t_670ec33c299f7e 317-341,372,376-378,382,417-463,488-489,518-522
+  s_909815e0e45219::t_966bbc1c8e7e53 523
+demo/i18n.tsx
+  s_909815e0e45219::t_0f9fc5b76c2dd7 1-142
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "3ba95ed7e8aba7ac208892af625f2146ca8aef83",
+  "prompts": {},
+  "sessions": {
+    "s_909815e0e45219": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c00e0f55-ca88-42a4-8971-4fe3b4244579",
+        "model": "claude-opus-5"
+      },
+      "human_author": "linyesh <linyesh@amazon.com>"
+    }
+  }
+}
