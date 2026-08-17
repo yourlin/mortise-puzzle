@@ -7,7 +7,7 @@
 
 ### ▶ [在线 Demo](https://yourlin.github.io/mortise-puzzle/)
 
-[![mortise-puzzle demo](https://raw.githubusercontent.com/yourlin/mortise-puzzle/main/docs/screenshot.jpg)](https://yourlin.github.io/mortise-puzzle/)
+[![mortise-puzzle demo](https://yourlin.github.io/mortise-puzzle/screenshot.jpg)](https://yourlin.github.io/mortise-puzzle/)
 
 *上图是 demo 的「混搭」模式 —— 每张图各用一种榫卯。* 拖动散开滑块、切换八种榫卯与
 网格尺寸、**把自己的图片拖进页面**立刻切开，点开任意一张后移动鼠标还能转 3D 视角。

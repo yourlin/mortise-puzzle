@@ -8,7 +8,7 @@ elements.
 
 ### ▶ [Live demo](https://yourlin.github.io/mortise-puzzle/)
 
-[![mortise-puzzle demo](https://raw.githubusercontent.com/yourlin/mortise-puzzle/main/docs/screenshot.jpg)](https://yourlin.github.io/mortise-puzzle/)
+[![mortise-puzzle demo](https://yourlin.github.io/mortise-puzzle/screenshot.jpg)](https://yourlin.github.io/mortise-puzzle/)
 
 *The demo in "mix" mode — every image cut with a different tenon style.* Drag the spread
 slider, switch between eight tenon shapes and grid sizes, **drop your own image onto the
