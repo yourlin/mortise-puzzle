@@ -55,6 +55,8 @@ export interface Puzzle {
   readonly rows: number;
   readonly seed: number;
   readonly style: CutStyleId;
+  /** 实际生效的榫头缩放（已收敛到安全区间） */
+  readonly tenonScale: number;
   readonly pieces: readonly Piece[];
 }
 
@@ -77,6 +79,12 @@ export interface CutStyle {
   readonly en: string;
   readonly hint: string;
   readonly edge: readonly EdgeCmd[];
+  /**
+   * 起伏是否贯穿整条边（如波纹），而不是集中在中部长出一个榫头。
+   * 这类样式缩放时只放大振幅、不沿边方向拉伸 —— 沿边拉伸会把端点附近的控制点
+   * 推到边外，而那个端点往往就落在图片边缘上。
+   */
+  readonly spansEdge?: boolean;
 }
 
 /**
@@ -232,6 +240,7 @@ export const CUT_STYLES = {
     zh: '波纹',
     en: 'Wave',
     hint: '不设榫头，整条边是双向弧',
+    spansEdge: true,
     edge: [
       ['C', 0.16, 0.1, 0.34, 0.1, 0.5, 0],
       ['C', 0.66, -0.1, 0.84, -0.1, 1, 0],
@@ -322,6 +331,54 @@ export interface PuzzleOptions {
   seed?: number;
   /** 榫头样式，见 CUT_STYLES。默认 'mushroom' */
   style?: CutStyleId;
+  /**
+   * 榫头整体缩放，1 为原始大小。越小越含蓄、越大越夸张。
+   * 会被收敛到 0.2 ~ 2。
+   */
+  tenonScale?: number;
+}
+
+/** 榫头缩放的区间；上限还会按样式自身的轮廓宽度进一步收紧，见 maxScaleFor */
+const TENON_MIN = 0.2;
+const TENON_MAX = 2;
+
+/**
+ * 这条轮廓沿边方向最多能放大多少倍，而不把控制点推出边的两端。
+ * 轮廓铺得越宽（比如双榫从 t = 0.2 就开始），能放大的余量就越小；一旦 t 变成负数，
+ * 控制点就会跑到边的起点之外 —— 而那个起点往往正落在图片边缘上，于是拼片越界。
+ */
+function maxScaleFor(edge: readonly EdgeCmd[]): number {
+  let tMin = 0.5;
+  let tMax = 0.5;
+  // 末尾那条到 (1, 0) 的直段不参与缩放，排除在外
+  edge.slice(0, -1).forEach((cmd) => {
+    const ts = cmd[0] === 'L' ? [cmd[1]] : [cmd[1], cmd[3], cmd[5]];
+    for (const t of ts) {
+      tMin = Math.min(tMin, t);
+      tMax = Math.max(tMax, t);
+    }
+  });
+  const room = Math.min(0.5 - tMin, tMax - 0.5);
+  return room > 1e-6 ? 0.5 / room : TENON_MAX;
+}
+
+/**
+ * 缩放一条边的轮廓。
+ * 集中式榫头（绝大多数样式）沿边与法线用同一个系数，于是形状等比放大而不会被拉成
+ * 又高又窄；贯穿式样式（spansEdge，如波纹）只放大法线方向的振幅 —— 沿边拉伸会把
+ * 端点附近的控制点推到 t < 0，而那个端点常常就在图片边缘上，一拉就越界。
+ * 末尾那条到 (1, 0) 的直段始终保持不动，它必须落在边的终点。
+ */
+function scaleEdge(edge: readonly EdgeCmd[], s: number, spansEdge = false): readonly EdgeCmd[] {
+  if (s === 1) return edge;
+  const T = spansEdge ? (t: number) => t : (t: number) => 0.5 + (t - 0.5) * s;
+  const U = (u: number) => u * s;
+  return edge.map((cmd, i) => {
+    if (i === edge.length - 1) return cmd; // 收尾的 ['L', 1, 0]
+    return cmd[0] === 'L'
+      ? (['L', T(cmd[1]), U(cmd[2])] as const)
+      : (['C', T(cmd[1]), U(cmd[2]), T(cmd[3]), U(cmd[4]), T(cmd[5]), U(cmd[6])] as const);
+  });
 }
 
 /**
@@ -345,16 +402,21 @@ function dirBit(seed: number, i: number): 0 | 1 {
  * makePuzzle(800, 600);                                    // 2×2
  * makePuzzle(800, 600, { cols: 4, rows: 3, seed: 7 });      // 4×3
  * makePuzzle(512, 512, { cols: 3, rows: 3, style: 'dovetail' });
+ * makePuzzle(512, 512, { tenonScale: 0.6 });               // 更含蓄的小榫头
  */
 export function makePuzzle(width: number, height = width, options: PuzzleOptions = {}): Puzzle {
-  const { cols = 2, rows = 2, seed = 0, style = 'mushroom' } = options;
+  const { cols = 2, rows = 2, seed = 0, style = 'mushroom', tenonScale = 1 } = options;
   const w = width;
   const h = height;
   const nc = Math.max(1, Math.floor(cols));
   const nr = Math.max(1, Math.floor(rows));
   const cw = w / nc;
   const ch = h / nr;
-  const cut = CUT_STYLES[style] ?? CUT_STYLES.mushroom;
+  const base: CutStyle = CUT_STYLES[style] ?? CUT_STYLES.mushroom;
+  // 贯穿式样式只放大振幅，沿边方向不动，所以不受轮廓宽度的限制
+  const ceiling = base.spansEdge ? TENON_MAX : Math.min(TENON_MAX, maxScaleFor(base.edge));
+  const s = Math.min(Math.max(tenonScale, TENON_MIN), ceiling);
+  const cut: CutStyle = s === 1 ? base : { ...base, edge: scaleEdge(base.edge, s, base.spansEdge) };
   // 榫头高度的统一基准：单元格较短的那条边。沿边方向按各自边长缩放，法线方向
   // 统一用这个值，横竖榫头才会一样大、不被拉成椭圆。
   const tab = Math.min(cw, ch);
@@ -405,5 +467,5 @@ export function makePuzzle(width: number, height = width, options: PuzzleOptions
     }
   }
 
-  return { width: w, height: h, cols: nc, rows: nr, seed, style, pieces };
+  return { width: w, height: h, cols: nc, rows: nr, seed, style, tenonScale: s, pieces };
 }

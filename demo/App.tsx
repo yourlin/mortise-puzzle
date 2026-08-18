@@ -37,6 +37,10 @@ const initialGrid = () => {
   const hit = GRIDS.findIndex((g) => `${g.cols}x${g.rows}` === raw);
   return hit >= 0 ? hit : 0;
 };
+const initialTenon = () => {
+  const v = Number(qs().get('tenon'));
+  return Number.isFinite(v) && v > 0 ? Math.min(Math.max(v, 0.2), 2) : 1;
+};
 const initialOpen = () => {
   const raw = qs().get('open');
   if (raw === null) return null;
@@ -53,6 +57,7 @@ export default function App() {
   const [spread, setSpread] = useState(initialSpread);
   const [cut, setCut] = useState<CutChoice>(initialCut);
   const [gridIdx, setGridIdx] = useState(initialGrid);
+  const [tenon, setTenon] = useState(initialTenon);
   const [open, setOpen] = useState<number | null>(initialOpen);
   const grid = GRIDS[gridIdx]!;
   // 网格越密，单元格越小 —— 散开量得跟着收，否则 4×4 拆开就糊成一团
@@ -179,6 +184,19 @@ export default function App() {
               />
               <em>{spread}</em>
             </label>
+            <label className="slider">
+              <span>{t.tenonSize}</span>
+              <input
+                type="range"
+                min={0.2}
+                max={2}
+                step={0.05}
+                value={tenon}
+                onChange={(e) => setTenon(Number(e.target.value))}
+                aria-label={t.tenonSize}
+              />
+              <em>{tenon.toFixed(2)}×</em>
+            </label>
             <div className="toolbar__actions">
               <button className="pill" onClick={() => setSpread(spread > 0 ? 0 : 16)}>
                 {spread > 0 ? t.collapseAll : t.explodeAll}
@@ -207,6 +225,7 @@ export default function App() {
                   rows={grid.rows}
                   seed={i}
                   cut={cutFor(cut, i)}
+                  tenonScale={tenon}
                   spread={spread * cellScale}
                   lift={spread * cellScale * 0.9}
                   style={{ padding: inset }}
@@ -233,6 +252,7 @@ export default function App() {
         cols={grid.cols}
         rows={grid.rows}
         cellScale={cellScale}
+        tenonScale={tenon}
         lang={lang}
         t={t}
         cutFor={(i) => cutFor(cut, i)}

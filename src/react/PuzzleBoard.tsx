@@ -13,6 +13,8 @@ export interface PuzzleBoardProps {
   seed?: number;
   /** 榫头样式，见 CUT_STYLES */
   cut?: CutStyleId;
+  /** 榫头整体缩放，1 为原始大小；超出安全区间会被收敛 */
+  tenonScale?: number;
   /** 四片朝外散开的距离（基准坐标系下的 px，会跟着缩放） */
   spread?: number;
   /** 散开时的抬升幅度，营造前后层次 */
@@ -111,6 +113,7 @@ export function PuzzleBoard({
   rows = 2,
   seed = 0,
   cut = 'mushroom',
+  tenonScale = 1,
   spread = 0,
   lift = 0,
   fit = 'contain',
@@ -126,8 +129,8 @@ export function PuzzleBoard({
   const { ref, k } = useFitScale(BASE, boardH);
   const inView = useInView(ref, lazy);
   const puzzle = useMemo(
-    () => makePuzzle(BASE, boardH, { cols, rows, seed, style: cut }),
-    [boardH, cols, rows, seed, cut],
+    () => makePuzzle(BASE, boardH, { cols, rows, seed, style: cut, tenonScale }),
+    [boardH, cols, rows, seed, cut, tenonScale],
   );
 
   return (

@@ -19,6 +19,7 @@ interface Props {
   rows: number;
   /** 网格越密，散开量要按单元格尺寸等比收 */
   cellScale: number;
+  tenonScale: number;
   lang: Lang;
   t: Strings;
   /** 第 i 张图该用哪种榫卯（混搭模式下每张不同） */
@@ -37,6 +38,7 @@ export function Lightbox({
   cols,
   rows,
   cellScale,
+  tenonScale,
   lang,
   t,
   cutFor,
@@ -133,6 +135,7 @@ export function Lightbox({
                   rows={rows}
                   seed={index!}
                   cut={cutFor(index!)}
+                  tenonScale={tenonScale}
                   spread={spread * cellScale}
                   lift={spread * cellScale * 1.5}
                   style={{ padding: `${((spread * cellScale) / PUZZLE_BASE) * 100}%` }}

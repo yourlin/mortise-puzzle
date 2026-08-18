@@ -1,6 +1,6 @@
 {
   "name": "mortise-puzzle",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Cut any image into a 2x2 mortise-and-tenon jigsaw and render each piece as pseudo-3D with pure CSS. 榫卯拼图切割算法 + CSS 伪 3D 渲染。",
   "keywords": [
     "jigsaw",

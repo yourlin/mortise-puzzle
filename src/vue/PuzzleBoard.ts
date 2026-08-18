@@ -33,6 +33,8 @@ export const PuzzleBoard = defineComponent({
     seed: { type: Number, default: 0 },
     /** 榫头样式，见 CUT_STYLES */
     cut: { type: String as PropType<CutStyleId>, default: 'mushroom' },
+    /** 榫头整体缩放，1 为原始大小；超出安全区间会被收敛 */
+    tenonScale: { type: Number, default: 1 },
     /** 拼片朝外散开的距离（基准坐标系下的 px，会跟着缩放） */
     spread: { type: Number, default: 0 },
     /** 散开时的抬升幅度，营造前后层次 */
@@ -61,6 +63,7 @@ export const PuzzleBoard = defineComponent({
         rows: props.rows,
         seed: props.seed,
         style: props.cut,
+        tenonScale: props.tenonScale,
       }),
     );
 

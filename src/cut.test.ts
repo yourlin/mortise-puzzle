@@ -129,6 +129,26 @@ describe('makePuzzle', () => {
     expectAreaConserved(pz);
   });
 
+  it('tenonScale 默认 1，并回报实际生效值', () => {
+    expect(makePuzzle(400).tenonScale).toBe(1);
+    expect(makePuzzle(400, 400, { tenonScale: 0.6 }).tenonScale).toBe(0.6);
+  });
+
+  it('tenonScale 越界被收敛，上限按样式轮廓宽度自适应', () => {
+    expect(makePuzzle(400, 400, { tenonScale: 0.01 }).tenonScale).toBe(0.2);
+    // 双榫的轮廓铺得最宽（t 从 0.2 起），能放大的余量因此最小
+    const twin = makePuzzle(400, 400, { style: 'twin', tenonScale: 9 }).tenonScale;
+    const mushroom = makePuzzle(400, 400, { style: 'mushroom', tenonScale: 9 }).tenonScale;
+    expect(twin).toBeLessThan(mushroom);
+    expect(twin).toBeGreaterThan(1);
+  });
+
+  it('缩放确实改变了榫头形状', () => {
+    const small = makePuzzle(400, 400, { tenonScale: 0.5 }).pieces[0]!.d;
+    const large = makePuzzle(400, 400, { tenonScale: 1.5 }).pieces[0]!.d;
+    expect(small).not.toBe(large);
+  });
+
   it('异常网格参数被收敛到至少 1', () => {
     expect(makePuzzle(400, 400, { cols: 0, rows: -3 }).pieces).toHaveLength(1);
     expect(makePuzzle(400, 400, { cols: 2.7, rows: 3.9 }).pieces).toHaveLength(6); // 向下取整
@@ -160,6 +180,26 @@ describe.each(CUT_STYLE_IDS)('榫卯样式 %s', (style) => {
           expect(inBounds(polyline(pc.d), 480, 360)).toBe(true);
         }
         expectAreaConserved(pz);
+      }
+    }
+  });
+
+  it(`${CUT_STYLES[style].zh}：各种榫头缩放下都不越界、面积守恒`, () => {
+    // 榫头放大到极端值时最容易把控制点推出图片边界 —— 波纹与双榫都曾在这里翻车
+    for (const tenonScale of [0.2, 0.5, 1, 1.5, 2, 9]) {
+      for (const [cols, rows] of [[2, 2], [3, 3], [6, 4]] as [number, number][]) {
+        for (const [w, h] of [[400, 400], [200, 640]] as [number, number][]) {
+          const pz = makePuzzle(w, h, { cols, rows, seed: 5, style, tenonScale });
+          for (const pc of pz.pieces) {
+            const pts = polyline(pc.d);
+            expect(closed(pts)).toBe(true);
+            expect(
+              inBounds(pts, w, h),
+              `${style} scale=${tenonScale} ${cols}×${rows} ${w}×${h} ${pc.key} 越界`,
+            ).toBe(true);
+          }
+          expectAreaConserved(pz);
+        }
       }
     }
   });

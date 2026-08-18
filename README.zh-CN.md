@@ -19,8 +19,8 @@
   测试兜底。
 - **任意网格尺寸**：2×2、3×3、6×4、乃至单片都行 —— 每条内部边的榫头朝向都由
   一个 seed 确定性派生。
-- **八种榫卯**：蘑菇榫、燕尾榫、直榫、球榫、楔钉榫、锁孔榫、双榫、波纹。加一种
-  只需写一组归一化坐标。
+- **八种榫卯，大小可调**：蘑菇榫、燕尾榫、直榫、球榫、楔钉榫、锁孔榫、双榫、波纹，
+  外加一个 `tenonScale` 旋钮，从含蓄到夸张随意。加一种样式只需写一组归一化坐标。
 - **纯 CSS 伪 3D**：`clip-path` 裁形，链式 `drop-shadow` 挤出侧壁与落影。拼片
   仍是能 hover、能聚焦、能动画的 DOM 节点。
 - **任意尺寸与比例**：横图、竖图、极端长条都不会把榫头拉变形；显示尺寸自适应容器。
@@ -59,6 +59,7 @@ export default function Example() {
 | `cols` / `rows` | `number` | `2` | 网格尺寸，`3 × 3` 就是九片 |
 | `seed` | `number` | `0` | 派生每条内部边的榫头朝向；同样的入参永远切出同样的拼图 |
 | `cut` | `CutStyleId` | `'mushroom'` | 榫卯样式，见下表 |
+| `tenonScale` | `number` | `1` | 榫头整体缩放，越小越含蓄、越大越夸张；会被收敛到安全区间（见下） |
 | `spread` | `number` | `0` | 拼片朝外散开的距离，会跟着缩放 |
 | `lift` | `number` | `0` | 散开时的抬升幅度，制造前后层次 |
 | `fit` | `'contain' \| 'exact'` | `'contain'` | `contain` 在容器给定的形状内按比例居中留白；`exact` 让容器跟着图片比例走 |
@@ -167,12 +168,19 @@ pieces[0].ox;  // -1..1 —— 朝外的方向，做炸开动画时用得上
 
 ```ts
 makePuzzle(width: number, height?: number, options?: {
-  cols?: number;      // 默认 2
-  rows?: number;      // 默认 2
-  seed?: number;      // 默认 0
-  style?: CutStyleId; // 默认 'mushroom'
+  cols?: number;        // 默认 2
+  rows?: number;        // 默认 2
+  seed?: number;        // 默认 0
+  style?: CutStyleId;   // 默认 'mushroom'
+  tenonScale?: number;  // 默认 1
 }): Puzzle
 ```
+
+`tenonScale` 会同时缩放两个方向，所以榫头是等比放大、不会被拉成又高又窄。取值收敛
+在 `0.2 … 2`，且上限按样式自动收紧：轮廓沿边铺得越宽，能放大的余量就越小 —— 一旦
+控制点被推到边的端点之外就会越界，而那些端点往往正落在图片边缘上。所以 `twin`
+（两个榫头从 `t = 0.2` 就开始）大约到 `1.46` 就到顶，而 `mushroom` 能吃满 `2`。
+实际生效的值会通过 `puzzle.tenonScale` 回报。
 
 `height` 缺省时跟 `width` 一致。零依赖、不碰 DOM，所以在 Node 里也能用 ——
 生成 SVG 文件或做服务端裁图都可以。
@@ -240,7 +248,8 @@ demo 切的是一组羊毛毡风格的小场景，纯粹作为演示素材用 AI
 
 界面支持中英文（默认英文），切换按钮在右上角。
 
-深链接：`?lang=zh`、`?cut=dovetail`（或 `mix`）、`?grid=3x3`、`?open=8`、`?spread=16`。
+深链接：`?lang=zh`、`?cut=dovetail`（或 `mix`）、`?grid=3x3`、`?tenon=1.4`、`?open=8`、
+`?spread=16`。
 
 本地运行：
 

@@ -15,6 +15,7 @@ export interface Strings {
   gridSize: string;
   spread: string;
   spreadAria: string;
+  tenonSize: string;
   mix: string;
   mixHint: string;
   pickImage: string;
@@ -55,6 +56,7 @@ const EN: Strings = {
   gridSize: 'Grid size',
   spread: 'Spread',
   spreadAria: 'Spread distance',
+  tenonSize: 'Tenon size',
   mix: 'Mix',
   mixHint: 'A different tenon style for every image',
   pickImage: 'Drop / pick image',
@@ -92,6 +94,7 @@ const ZH: Strings = {
   gridSize: '网格尺寸',
   spread: '整体散开',
   spreadAria: '整体散开距离',
+  tenonSize: '榫头大小',
   mix: '混搭',
   mixHint: '每张图各用一种榫卯',
   pickImage: '拖入 / 选图',

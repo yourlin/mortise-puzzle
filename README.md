@@ -22,8 +22,9 @@ page** to cut it instantly, then click any tile and move the mouse to tilt it in
   area-conservation test suite.
 - **Any grid size.** 2×2, 3×3, 6×4, a single piece — the tenon direction of every
   internal edge is derived deterministically from one seed.
-- **Eight tenon styles.** Mushroom, dovetail, square, ball, wedge, keyhole, twin and
-  wave. Adding one more is a single array of normalized coordinates.
+- **Eight tenon styles, freely scalable.** Mushroom, dovetail, square, ball, wedge,
+  keyhole, twin and wave — plus a `tenonScale` knob from subtle to exaggerated. Adding
+  one more style is a single array of normalized coordinates.
 - **Pure-CSS pseudo-3D.** `clip-path` carves the shape, chained `drop-shadow`
   extrudes the side walls and drop shadow. Pieces remain hoverable, focusable,
   animatable DOM nodes.
@@ -67,6 +68,7 @@ export default function Example() {
 | `cols` / `rows` | `number` | `2` | Grid size. `3 × 3` gives nine pieces. |
 | `seed` | `number` | `0` | Seeds the tenon direction of every internal edge; same inputs always cut the same puzzle. |
 | `cut` | `CutStyleId` | `'mushroom'` | Tenon style, see the table below. |
+| `tenonScale` | `number` | `1` | Scales the tenons as a whole — smaller is subtler, larger more pronounced. Clamped to a safe range (see below). |
 | `spread` | `number` | `0` | How far the pieces drift outward; scales with the board. |
 | `lift` | `number` | `0` | Z-offset applied while spread, for depth layering. |
 | `fit` | `'contain' \| 'exact'` | `'contain'` | `contain` centers the image inside whatever shape the container has; `exact` makes the container follow the image's aspect ratio. |
@@ -179,12 +181,21 @@ pieces[0].ox;         // -1..1 — outward direction, handy for explode animatio
 
 ```ts
 makePuzzle(width: number, height?: number, options?: {
-  cols?: number;      // default 2
-  rows?: number;      // default 2
-  seed?: number;      // default 0
-  style?: CutStyleId; // default 'mushroom'
+  cols?: number;        // default 2
+  rows?: number;        // default 2
+  seed?: number;        // default 0
+  style?: CutStyleId;   // default 'mushroom'
+  tenonScale?: number;  // default 1
 }): Puzzle
 ```
+
+`tenonScale` scales tenons in both axes at once, so the shape stays proportional
+instead of being stretched tall and narrow. It's clamped to `0.2 … 2`, and the upper
+bound tightens automatically per style: the wider a style's outline sits along the edge,
+the less room it has to grow before its control points would be pushed past the ends of
+the edge — and those ends often lie right on the image border. `twin` (whose two tenons
+span from `t = 0.2`) therefore tops out around `1.46`, while `mushroom` reaches the full
+`2`. The value that actually took effect is reported back as `puzzle.tenonScale`.
 
 `height` defaults to `width`. Zero dependencies and no DOM access, so it also works
 in Node — for generating SVG files or slicing images server-side.
@@ -255,7 +266,8 @@ leaves your browser.
 
 The UI is bilingual (English by default) — the toggle sits in the top-right corner.
 
-Deep links: `?lang=zh`, `?cut=dovetail` (or `mix`), `?grid=3x3`, `?open=8`, `?spread=16`.
+Deep links: `?lang=zh`, `?cut=dovetail` (or `mix`), `?grid=3x3`, `?tenon=1.4`, `?open=8`,
+`?spread=16`.
 
 Run it locally:
 
